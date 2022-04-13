@@ -1,24 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Gif from "./componentes/Gif";
+import getApi from "./services/Api";
+import {Route} from 'wouter';
 
 function App() {
+
+  
+  const [gift, setGift] = useState([]);
+  const [keyword, setKeyWord] = useState("panda");
+
+  useEffect(() => {
+    getApi({ keyword }).then((gift) =>
+      setGift(gift));
+  }, [keyword]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="app">
+      <input type="text" name="search" placeholder="search your favorite gift" onChange={(e) => {
+      setKeyWord(e.target.value);
+      }}/>
+      <Route path="/gif/:keyword" > 
+      <Gif gift={gift}/>
+      </Route>
+    </main>
   );
 }
 
