@@ -3,6 +3,8 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
+    height: 90vh;
+    overflow-y: auto;
 }
 
 .gif {

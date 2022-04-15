@@ -1,29 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Gif from "./componentes/Gif";
-import getApi from "./services/Api";
-import {Route} from 'wouter';
+import { useLocation, Route } from "wouter";
+import useGift from "./hooks/useGift";
 
 function App() {
-
-  
-  const [gift, setGift] = useState([]);
   const [keyword, setKeyWord] = useState("panda");
-
-  useEffect(() => {
-    getApi({ keyword }).then((gift) =>
-      setGift(gift));
-  }, [keyword]);
+  const [path, pushLocation] = useLocation();
+  const { isLoading, gifs } = useGift({ keyword });
 
   return (
-    <main className="app">
-      <input type="text" name="search" placeholder="search your favorite gift" onChange={(e) => {
-      setKeyWord(e.target.value);
-      }}/>
-      <Route path="/gif/:keyword" > 
-      <Gif gift={gift}/>
+    <div className="app">
+      <header className="header">
+        <h1>Giffy</h1>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            pushLocation(`/search/${keyword}`);
+          }}
+        >
+          <input
+            type="text"
+            name="search"
+            value={keyword}
+            placeholder="search your favorite gift"
+            onChange={(e) => {
+              setKeyWord(e.target.value);
+            }}
+            autoComplete="off"
+          />
+          <h3>Última búsqueda</h3>
+        </form>
+        
+      </header>
+      <Route path={`/search/${keyword}`}>
+        <main>
+          <Gif gift={gifs} isLoading={isLoading} />
+        </main>
       </Route>
-    </main>
+    </div>
   );
 }
 
